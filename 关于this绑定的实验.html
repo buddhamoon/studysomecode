@@ -23,7 +23,7 @@
         };
 
         
-
+        // 箭头函数在普通对象中的永久绑定
         const testA = {
             title: '测试对象 - A',
             type: 'obj',
@@ -69,6 +69,7 @@
         testB.myTest03();
         testThisFun01();
 
+        // 箭头函数在构造器中的表现
         class MotIss {
             constructor (number = 1) {
                 this.name = '一号机';
@@ -85,6 +86,8 @@
         }
 
         const lookThisFun = bindThisLook ();
+        // 本练习的理解核心
+        // 理解 this 在不同情况下的指向，关于箭头函数没有this会绑定外层this的问题，精确的描述是，会绑定起所在作用域的外层对象。
     </script>
 </body>
 </html>
