@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript中的类</title>
+</head>
+<body>
+    
+
+    <script>
+
+        class MotherIsGo {
+            constructor (props) {
+                this.name = props.name;
+                this.age = props.age;
+                this.fater = 'this';
+            }
+
+            copyOneName () {
+                this.name = this.name + this.name;
+            }
+            static goInt () {
+                console.info('这是一个静态方法')
+            }
+            static goIntSta = '3.1415'
+            pase = '520';
+            paseObj = { name : '难道说？' }
+        }
+
+        class ChildIsGo extends MotherIsGo {
+            constructor ( props = { name:'huang',age : 19 }, sex) {
+                super( props );
+                this.sex = 1;
+            }
+
+            changeChildSex () {
+                this.sex ? this.sex = 0 : this.sex = 1;
+                if (this.sex) {
+                    console.info('性别切换为 - 男')
+                } else {
+                    console.info('性别切换为 - 女')
+                }
+                
+            }
+        }
+
+
+        function LookTest( a = 10 ) {
+            console.log( new.target , a)
+        }
+        const testA = {
+            chlidA : {
+                a : 1
+            }
+        }
+        const testB = {
+            title : 'B',
+            showName : () => {
+                console.info(this, this.title);
+            },
+            showTitle : function () {
+                console.info(this, this.title);
+            }
+        }
+        const testC = {
+            title : 'C',
+            showName : testB.showName,
+            showTitle : testB.showTitle
+        }
+
+        function testD () {
+            var title = {
+                title : '就是这样',
+                showTitle : () => { console.info(this.title); return this.title }
+            };
+            title['showName'] = () => {
+                console.info(this, this.title); 
+                return this.title;
+            }
+            return title;
+        }
+        const testE = testD();
+    </script>
+</body>
+</html>

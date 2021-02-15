@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>关于this绑定的实验</title>
+</head>
+<body>
+    
+
+    <script>
+        "use strict"
+        const one = {
+            name : 'jazz',
+            sex: 'woman',
+            age: 19,
+            address: '北京路1199号'
+        }
+
+        const two = {
+            max : 19,
+            min : 10
+        };
+
+        
+
+        const testA = {
+            title: '测试对象 - A',
+            type: 'obj',
+            testFunOne : function testFun () {
+                console.info('测试方法一', this);
+            },
+            testFunTwo: () => {
+                console.info('测试方法二', this);
+            },
+            testFunThree : function () { return () => { console.info(this.title) }}
+        }
+
+        const testB = {
+            title: '测试对象 - B',
+            type: 'Arr',
+            myTest01: testA.testFunOne,
+            myTest02: testA.testFunTwo,
+            myTest03: testA.testFunThree
+        }
+
+        function testThisFun01 () {
+            console.info( '一个全局测试方那指向', this );
+        }
+
+        function TestGoodFun () {
+            this.title = 'pass'
+        }
+
+        function bindThisLook () {
+            const some = {
+                title : '绑定this函数',
+                age : 19,
+                fang : function(){ return () => { console.info(this) }}
+            }
+            return function () { return some };
+        }
+
+        testA.testFunOne();
+        testA.testFunTwo();
+        testA.testFunThree();
+        testB.myTest01();
+        testB.myTest02();
+        testB.myTest03();
+        testThisFun01();
+
+        class MotIss {
+            constructor (number = 1) {
+                this.name = '一号机';
+                this.age = '1988';
+                this.num = number;
+            }
+
+            showName = () => {
+                console.log( this.name );
+            }
+            showTitle () {
+                console.log( this.name );
+            }
+        }
+
+        const lookThisFun = bindThisLook ();
+    </script>
+</body>
+</html>

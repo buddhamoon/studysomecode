@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>发布与订阅模式联系</title>
+</head>
+<body>
+    
+    <script>
+
+        // 发布与订阅设计模式 - 程序模型
+        // 又名观察者模式
+
+        class Observer {
+            constructor () {
+                this.name = '发布订阅服务器';
+                this.type = 'server';
+                this.title = '';
+                this.publisher = [];
+            }
+
+            register ( id, name ) {
+                // 发布者注册Api
+                if ( !id || !name ) return;
+                let check = false;
+                this.publisher.forEach( item => {
+                    if ( item.id === id ) check = true;
+                })
+                if (check) return console.info('当前注册发布者已经存在！');
+                this.publisher.push({
+                    "id" : id,
+                    "name": name,
+                    messageList:[],
+                    userList:[]
+                })
+                console.info('发布者注册成功！')
+            }
+
+            releaseMessage ( id, message ) {
+                // 发布信息Api
+                if ( !id || !message ) return;
+                let check = false, nowReg;
+                this.publisher.forEach( item => {
+                    if ( item.id === id ) {
+                        check = true;
+                        nowReg = item;
+                    };
+                })
+                if (!check) return console.info('您尚未注册发布者省份，不能发布内容！');
+                const messageObj = {
+                    time : new Date(),
+                    id : nowReg.id,
+                    name : nowReg.name,
+                    message : message
+                }
+                nowReg['messageList'].push( messageObj );
+                nowReg['userList'].forEach( item => {
+                    this.notice( messageObj, item );
+                })
+            }
+
+            notice (obj, userId) {
+                // 通知订阅者 Api
+                console.info('尊敬的用户：' + userId + '您订阅的 ' + obj.name + ' 发布了新的内容：' + obj.message + ' 发布时间：' + obj.time);
+            }
+
+            subscribe ( id, userId ) {
+                // 订阅Api
+                let check = false;
+                this.publisher.forEach( item => {
+                    if ( id === item.id ) {
+                        check = true;
+                        if ( item.userList.includes(userId)) {
+                            return console.info('该用户已经订阅!')
+                        } else {
+                            item.userList.push(userId);
+                            console.info('订阅成功!')
+                        }
+                    }
+                })
+                if (!check) return console.info('您想要订阅公众号不存在！')
+            }
+        }
+
+        const ob = new Observer();
+
+        // 注册一个发布者身份
+        ob.register('93827','黑客公众号');
+        // 订阅指定发布者的信息
+        ob.subscribe('93827', '帅气的人');
+        ob.subscribe('93827', '吃饭的人');
+        ob.subscribe('93827', '喝水的人');
+        // 发布者发布信息消息提示订阅者
+        ob.releaseMessage('93827','本公众号的第一个文章')
+
+    </script>
+</body>
+</html>
