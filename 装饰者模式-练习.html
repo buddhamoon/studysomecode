@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>装饰者模式练习</title>
+</head>
+<body>
+    
+    <script>
+        const Plan = function () { };
+        
+        Plan.prototype.fire = function () { console.info('装饰者默认火力事件')};
+        Plan.prototype.testLook = function () { console.info('测试')};
+
+        const One = function (plan) { this.plan = plan }; 
+        One.prototype.fire = function () { 
+            this.plan.fire();
+            console.info('一号火力事件')
+        };
+        const Two = function (plan) { this.plan = plan };
+        Two.prototype.fire = function () { 
+            this.plan.fire();
+            console.info('二号火力事件')
+        };
+
+    </script>
+</body>
+</html>
