@@ -9,8 +9,10 @@
 <body>
     
     <script>
+
+        // 利用类的原型属性来实现装饰
         const Plan = function () { };
-        
+
         Plan.prototype.fire = function () { console.info('装饰者默认火力事件')};
         Plan.prototype.testLook = function () { console.info('测试')};
 
@@ -25,6 +27,22 @@
             console.info('二号火力事件')
         };
 
+        // JavaScript 可以利用浅拷贝特性，腾挪实现装饰。
+        let test01 = { fire : function () { console.info('原型火力') } };
+        const text02 = function () { console.info('装饰一号') };
+        const text03 = function () { console.info('装饰二号') };
+        let plan01 = test01.fire;
+        test01.fire = function () {
+            plan01();
+            text02();
+        }
+        plan01 = test01.fire;
+        test01.fire = function () {
+            plan01();
+            text03();
+        }
+
+        /* 利用了浅拷贝的特性，变量指向对象、函数，知识引用地址的改变 */
     </script>
 </body>
 </html>
