@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>状态模式练习</title>
+    <style>
+
+        .warpper {
+            display: flex;
+            align-self: start;
+            justify-self: start;
+            margin: 20px;
+        }
+        .light{
+            height: 30px;
+            width: 30px;
+            margin-right: 16px;
+            border-radius: 50%;
+            border: 1px solid rgb(219, 218, 218);
+        }
+
+        .light.orange {
+            background-color: orange;
+        }
+        .light.red {
+            background-color: red;
+        }
+        .light.seagreen {
+            background-color: seagreen;
+        }
+
+        .button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100px;
+            height: 30px;
+            border: 1px solid rgb(80, 79, 79);
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="warpper">
+        <div id="light-01" class="light"></div>
+        <div id="button-01" class="button">开关</div>
+    </div>
+
+    <div class="warpper">
+        <div id="light-02" class="light"></div>
+        <div id="button-02" class="button">开关</div>
+    </div>
+
+    <script>
+        // 获取效果测试元素
+        const lightOne = document.querySelector('#light-01');
+        const lightTwo = document.querySelector('#light-02');
+        const buttonOne = document.querySelector('#button-01');
+        const buttonTwo = document.querySelector('#button-02');
+
+        // 基础状态机
+        function baseCheckState () {};
+        class BaseCheckState {
+            constructor () {
+                this.state = false;
+            }
+
+            init () {
+                this.checkLight();
+                buttonOne.removeEventListener('click',this.clickLight);
+                buttonOne.addEventListener('click',this.clickLight);
+            }
+
+            checkLight = () => {
+                if( this.state ) {
+                    lightOne.classList.add('seagreen');
+                } else {
+                    lightOne.classList.remove('seagreen');
+                }
+            }
+
+            clickLight = () => {
+                this.state = !this.state;
+                this.checkLight();
+            }
+        }
+
+        const testOne = new BaseCheckState();
+        testOne.init();
+    </script>
+</body>
+</html>
