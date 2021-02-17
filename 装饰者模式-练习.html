@@ -43,6 +43,33 @@
         }
 
         /* 利用了浅拷贝的特性，变量指向对象、函数，知识引用地址的改变 */
+
+
+        // 利用 Aop 装饰函数封装
+        Function.prototype.after = function (afterfn) {
+            const _self = this;
+            return function () {
+                const ret = _self.apply( this, arguments );
+                afterfn.apply( this, arguments );
+                return ret;
+            }
+        }
+
+        Function.prototype.before = function (beforefn) {
+            const _self = this;
+            return function () {
+                beforefn.apply( this, arguments );
+                const ret = _self.apply( this, arguments );
+                return ret;
+            }
+        }
+
+        function test05 () {
+            console.info('5 号函数执行');
+        }
+        function test06 () {
+            console.info('6 号函数执行');
+        }
     </script>
 </body>
 </html>
