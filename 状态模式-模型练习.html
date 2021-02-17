@@ -92,6 +92,92 @@
 
         const testOne = new BaseCheckState();
         testOne.init();
+
+        // 状态模式 - 状态功能模型
+
+        // 灯光关闭时
+        class StateModeState {
+            constructor (light) {
+                this.state = light;
+            }
+
+            setState = (value, fun) => {
+                this.state = value;
+                if(typeof fun === "function" ) fun(this);
+            }
+
+
+            initClickLight  = () => {
+                console.info('1' ,this.state ,this.state.orageLight)
+                lightTwo.classList.remove('seagreen');
+                console.info('111')
+                this.state.currState = this.state.orageLight;
+            }
+        }
+
+        // 橙色灯光
+        class OrageLight {
+            constructor (light) {
+                this.state = light;
+            }
+
+            initClickLight = () => {
+                console.info('2')
+                lightTwo.classList.remove('seagreen');
+                lightTwo.classList.add('orange');
+                this.state.currState = this.state.redLight;
+                
+            }
+        }
+        // 红色灯光
+        class RedLight {
+            constructor (light) {
+                this.state = light;
+            }
+
+            initClickLight () {
+                console.info('3')
+                lightTwo.classList.remove('orange');
+                lightTwo.classList.add('red');
+                this.state.currState = this.state.seagreenLight;
+            }
+        }
+        // 绿色灯光
+        class SeagreenLight {
+            constructor (light) {
+                this.state = light;
+            }
+
+            initClickLight () {
+                console.info('4')
+                lightTwo.classList.remove('red');
+                lightTwo.classList.add('seagreen');
+                this.state.currState = this.state.stateModeState;
+            }
+        }
+
+        class Light {
+            constructor () {
+                this.stateModeState = new StateModeState(this);
+                this.orageLight = new OrageLight(this);
+                this.redLight = new RedLight(this);
+                this.seagreenLight = new SeagreenLight(this);
+                
+            }
+            init = () => {
+                buttonTwo.removeEventListener('click',this.nowClick);
+                buttonTwo.addEventListener('click',this.nowClick);
+                this.currState = this.orageLight;
+            }
+
+            nowClick = () => {
+                this.currState.initClickLight();
+            }
+        }
+
+      
+        let testTwo = new Light();
+        testTwo.init()
     </script>
 </body>
 </html>
