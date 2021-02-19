@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据结构、链表</title>
+</head>
+<body>
+
+    <script>
+
+        // 创建一个指定位数的链表
+        class CreateNode {
+            constructor ( num ) {
+                const obj = { value: 1 };
+                obj['next'] = this.createNode( obj, num );
+                return obj;
+            }
+            // 递归创建法
+            createNode ( node, num ) {
+                if (num <= 0 ) return;
+                num --;
+                const obj = {
+                    value :  Number(node.value) + 1
+                }
+                obj['next'] = this.createNode( obj, num );
+                return obj;
+            }
+        }
+    </script>
+    
+</body>
+</html>
