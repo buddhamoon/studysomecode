@@ -11,11 +11,15 @@
     <script>
 
         // 创建一个指定位数的链表
+        // 默认使用递归创建指定节点数的链表 ，第二参数 type 传入 for 字符串时，使用 for循环的方法创建链表节点。
         class CreateNode {
-            constructor ( num ) {
-                const obj = { value: 1 };
-                obj['next'] = this.createNode( obj, num );
-                return obj;
+            constructor ( num, type ) {
+                if ( !num ) return;
+                this.obj = Object.create(this);
+                this.obj['value'] = 1;
+                if ( !type || type === 'rec') obj['next'] = this.createNode( this.obj, num );
+                if ( type === 'for') this.createNodeFor( this.obj, num );
+                return this.obj;
             }
             // 递归创建法
             createNode ( node, num ) {
@@ -26,6 +30,43 @@
                 }
                 obj['next'] = this.createNode( obj, num );
                 return obj;
+            }
+
+            // for 循环创建链表
+            createNodeFor ( node, num ) {
+                let some = node;
+                for ( let i = 0; i < num; i ++ ) {
+                    const obj = {
+                    value :  Number(some.value) + 1
+                    };
+                    some['next'] = obj;
+                    some = some['next'];
+                };
+            }
+
+            queryNodeLength () {
+                // 查询当前链表一共有多少个节点
+                let length = 0;
+                function query( node ) {
+                    if (!node['next']) return;
+                    length ++;
+                    query( node['next'] )
+                }
+                query( this );
+                return length;
+            }
+            
+            nodePush () {
+                // 向链表尾部新增一个节点
+                function query( node ) {
+                    if (!node['next']) {
+                        return node['next'] = {
+                            value : node.value + 1
+                        }
+                    };
+                    query( node.next )
+                }
+                query( this );
             }
         }
     </script>
