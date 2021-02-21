@@ -61,6 +61,39 @@
                 }
                 return values;
             }
+
+            entries () {
+                const values = [];
+                for ( let i in this.table ) {
+                    values.push( this.table[i].goToString() );
+                }
+                return values;
+            }
+
+            size () {
+                let size = 0;
+                for ( let i in this.table ){
+                    size ++;
+                }
+                return size;
+            }
+
+            forEach ( fun ) {
+                if ( typeof fun !== 'function' ) return;
+                const keys = this.keys();
+                const length = this.size();
+                for ( let i = 0; i < length; i++ ){
+                    fun( this.table[keys[i]], i );
+                }
+            }
+
+            clear () {
+                this.table = {};
+            }
+
+            isEmpty () {
+                return this.size() === 0;
+            }
         }
 
         class ValuePair {
@@ -71,7 +104,7 @@
             }
 
             goToString () {
-                return `[#${key}:${value}]`;
+                return `[#${this.key}:${this.value}]`;
             }
         }
 
@@ -82,7 +115,8 @@
                 obj.set(getRandomStr( 'key-xxxx' ), getRandomStr( 'val-xxxx' ))
             }
         };
-        testDataSet( testObj, 12 )
+        testDataSet( testObj, 12 );
+
         function getRandomStr( str ) {
             // 获取一个随机的字符串
             // 常用作生成uuid等功能，模板示例'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
