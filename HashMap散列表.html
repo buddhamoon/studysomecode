@@ -17,6 +17,13 @@
             background-color: rgb(221, 219, 219);
             padding: 0px 4px;
         }
+
+        textref {
+            color: rgb(163, 162, 162);
+            font-size: 13px;
+            border-left: 3px solid #ccc;
+            padding-left: 5px;
+        }
         
     </style>
 </head>
@@ -25,8 +32,33 @@
     <hr />
     <p>HashTable类，也叫 HashMap类 ，它是 Dictionary 类的一种散列表实现方式。</p>
     <p>散列表是一种字典的实现，可以用来关联数组、对数据库进行索引，在创建关系型数据库时，在创建表的同时，创建这张表的索引有利于更快的查询数据</p>
-    <code> console.info(showTime) </code>
-
+    <h2>Hash冲突问题：</h2>
+    <p>描述：由于不同的字符串可能会出现解析出的哈希值相同的情况，所以在赋值后，之前的数据会被之后的同哈希值覆盖掉。</p>
+    <p>解决冲突：分离链接、线性探查、双散列法。</p>
+    <h3>1、分离链接</h3> 
+    <p>当出现哈希值冲突时，为每个位置添加一个链表，将冲突的值逐一以链表的形式保存。</p>
+    <p>所以需要该写 put 、get 、remove 方法</p>
+    <p>改写思想：</p>
+    <p><code>put</code>：当添加值时，需要判断这个值的hash值是否已经存在，不存在直接赋值，存在的话就需要在目前值的上面添加一个nextlist属性，来将新值链表入这个哈希值对应的链表。</p>
+    <p><code>get</code>：当获取值时，先根据 hash 查找，获得数据后，要判断这个数据是否对应有链表的下一阶段，如果存在，则需要去比对 具体的字符串key，比对成功后，返回相应值。</p>
+    <p><code>remove</code> ：其删除逻辑的前半部分与 get 方法类似，需要确定这个值在什么地方，但是在删除时，有可能会遇到链表，所以删除链表上的节点后，需要算法更新链表。</p>
+    <h3>2、线性探查</h3>
+    <p>描述：利用某种方法，将元素直接存储在表中，而非使用链表这样的方式开拓新的空间存储。</p>
+    <p>实现方式：当添加一个值时发现这个值的哈希位已经有值了，就开始类推操作，在这个位置的基础上 + 1 位添加，如果还有值，不断++操作直到找到空位添加数据。</p>
+    <p>所以需要该写 put 、get 、remove 方法</p>
+    <p>改写思想：</p> 
+    <p><code>put</code>：添加前看哈希位是否被占用，没有则直接添加，存在则++操作找空位存储。</p>       
+    <p><code>get</code>：获取数据时不能直接提取，而是找到对应哈希位的值后要比对实际字符串key值，如果匹配，则需要++操作，逐一比对查找。</p>
+    <p><code>remove</code>：在进行删除功能时会出现这样一个问题，如果某个值真的被删除了，那么会影响算法推理，也就是之前的重复值是基于之前有值进行的推理，那么其中的值被删除了，可能从算法角度会影响推理结果。</p>
+    <p>那么这样就出现了两个关于删除的设计思想：</p>
+    <h4>1、软删除 / 惰性删除</h4>
+    <p>也就是删除某个值时只是使用标记符合标记该值在逻辑上已经删除，但实际从算法推理上还是存在的。</p>
+    <h4>2、删除后补位</h4>
+    <p>即当删除一个值后，会依次推理后面的值，依次向上补位。</p>
+    <p><textref>（很明显，这两种方式都有明显的缺陷）</textref></p>
+    <h3>幻数计算：djb2散列函数</h3>
+    <p>设计思想:在散列函数中，给初始的hash累加赋予一个质数：5381</p>
+    <p><textref>实际上还是会有冲突，虽然在解决少量的散列值时冲突似乎看不到了，但是将测试数据加大到上千时，冲突还是比较明显的。</textref></p>
 
     <script>
         // 字典 - Dictionary 类
@@ -108,7 +140,7 @@
             }
         }
 
-        // 测试数据
+        // 测试数据 - 字典类
         const testObj = new CreateMyObj();
         function testDataSet ( obj, num ) {
             for ( let i = 0; i < num; i++ ) {
@@ -127,6 +159,80 @@
                 return v.toString(16);
             });
         }
+
+        // HashTable HashMap 散列表 - 哈希
+
+        class MyHashTable {
+            constructor () {
+                this.table = {};
+            }
+
+            checkHashCode ( key ) {
+                if (typeof key === "number") return key;
+                const tableKey = key.toString();
+                let hash = 0;
+                for ( let i = 0; i < tableKey.length; i++ ) {
+                    hash += tableKey.charCodeAt(i);
+                }
+                return hash % 37;    
+            }
+
+            djb2HashCode ( key ) {
+                // djb2哈希散列函数
+                const tableKey = key.toString();
+                let hash = 5381;
+                for ( let i = 0; i < tableKey.length; i++ ) {
+                    hash = (hash * 33) + tableKey.charCodeAt(i);
+                }
+                return hash % 1013;  
+            };
+
+            put ( key, value ) {
+                if (!key) return;
+                const position = this.djb2HashCode(key);
+                this.table[position] = new ValuePair( key, value );
+                return true;
+            }
+
+            get ( key ) {
+                const nowVal = this.table[this.checkHashCode(key)];
+                return nowVal ? nowVal.value : undefined;
+            }
+
+            remove ( key ) {
+                const hashVal = this.checkHashCode(key);
+                const nowKeyVal = this.table[hashVal];
+                return nowKeyVal ? delete this.table[hashVal] : true;
+            }
+
+            size () {
+                let size = 0;
+                for ( let i in this.table ){
+                    size ++;
+                }
+                return size;
+            }
+        }
+
+        // 测试数据 - HashMap
+        const testHashObj = new MyHashTable();
+        function testDataSeHashAdd ( obj, num ) {
+            for ( let i = 0; i < num; i++ ) {
+                obj.put(getRandomStr( 'key-xxxx' ), getRandomStr( 'val-xxxx' ))
+            }
+        };
+        testDataSeHashAdd( testHashObj, 1291 );
+
+
+        // 测试数据 - HashMap
+        const testEs6Map = new Map();
+        function testDataEs6Map ( obj, num ) {
+            for ( let i = 0; i < num; i++ ) {
+                obj.set(getRandomStr( 'key-xxxx' ), getRandomStr( 'val-xxxx' ))
+            }
+        };
+        testDataEs6Map( testEs6Map, 1291 );
+        
     </script>
 </body>
 </html>
