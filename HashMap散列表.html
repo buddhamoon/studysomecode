@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        HashMap、HashTable、散列表、散列函数
+    </title>
+    <style>
+        p {
+            text-indent: 2em;
+            font-size: 14px;
+            margin: 10px 20px;
+        }
+        code {
+            background-color: rgb(221, 219, 219);
+            padding: 0px 4px;
+        }
+        
+    </style>
+</head>
+<body>
+    <h1>HashMap、HashTable、散列表、散列函数</h1>
+    <hr />
+    <p>HashTable类，也叫 HashMap类 ，它是 Dictionary 类的一种散列表实现方式。</p>
+    <p>散列表是一种字典的实现，可以用来关联数组、对数据库进行索引，在创建关系型数据库时，在创建表的同时，创建这张表的索引有利于更快的查询数据</p>
+    <code> console.info(showTime) </code>
+
+
+    <script>
+        // 字典 - Dictionary 类
+        class CreateMyObj {
+            constructor ( ) {
+                this.table = {};
+            }
+
+            set ( key, value = undefined ) {
+                if( !key ) return false;
+                const tableKey = key.toString();
+                this.table[tableKey] = new ValuePair( key, value );
+            }
+
+            get ( key ) {
+                const valuePair = this.table[key.toString()];
+                return valuePair ? valuePair.value : undefined;
+            }
+
+            keys () {
+                const key = [];
+                for ( let i in this.table ) {
+                    key.push(i);
+                }
+                return key;
+            }
+
+            values () {
+                const values = [];
+                for ( let i in this.table ) {
+                    values.push(this.table[i].value);
+                }
+                return values;
+            }
+        }
+
+        class ValuePair {
+            // 新增值添加生成对象
+            constructor ( key, value ) {
+                this.key = key;
+                this.value = value;
+            }
+
+            goToString () {
+                return `[#${key}:${value}]`;
+            }
+        }
+
+        // 测试数据
+        const testObj = new CreateMyObj();
+        function testDataSet ( obj, num ) {
+            for ( let i = 0; i < num; i++ ) {
+                obj.set(getRandomStr( 'key-xxxx' ), getRandomStr( 'val-xxxx' ))
+            }
+        };
+        testDataSet( testObj, 12 )
+        function getRandomStr( str ) {
+            // 获取一个随机的字符串
+            // 常用作生成uuid等功能，模板示例'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
+            const nowStr = str.toString();
+            return nowStr.replace(/[xy]/g, function (c) {
+                var r = Math.random() * 16 | 0,
+                v = c == 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
+        }
+    </script>
+</body>
+</html>
