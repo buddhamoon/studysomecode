@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>二叉树与二叉树遍历</title>
+</head>
+<body>
+    
+    <!--
+
+        感慨：
+            之前是对二叉树的相关知识点进行过比较详细的学习与练习的，只是人这个东西，因为某种原因，是善于遗忘的，
+        回过头来再去看一些知识点时，想要回忆起具体的实现细节，已经非常困难了，只是大致有那么一个印象，知道这个东西
+        大致是怎么一回事。
+            所以，特此复习重写一次。
+
+
+        树（tree）
+        定义：
+            是一种分层的数据结构抽象类型。
+        特征：
+            1、根节点：树结构最顶部的节点。
+            2、父（子）节点：每一个父节点通常可以拥有多个子节点，但是每一个子节点通常只拥有一个父节点。
+            拓展：
+                在数据结构中，子节点的信息通常继承于父节点，所以相对于子节点来说，父节点的唯一性对数据结构的复杂的影响非常重要。
+                但是在实际的项目中，有时候确实需要某一个子节点（或子类）继承不同的父类特性，这个时候，通常也不会真的去让一个子类
+                去继承多个父节点，而是使用了一种叫做混入（Mixin）的思想，即：将希望被继承的多个父类属性混入到一个对象中供子类继承
+                这样一来，子类不但继承了所需不同父类的属性，还能够在混入中看出他所继承的对象，到底混入了那些父类方法，保证了数据结构
+                的明确性。
+
+        二叉树（Binary tree）
+        定义：是一种树形结构模型，但规定每一个父节点最多只能拥有两个子节点。
+        
+        二叉搜索树（Binary Search tree）
+
+
+
+
+
+
+        
+
+
+    -->
+
+
+    <script>
+
+        class BinaryTreeNode {
+            constructor () {
+                this.key = 1;
+                this.left = null;
+                this.right = null;
+            }
+
+            createBinaryTree ( num ) {
+                if (typeof num !== "number") return;
+                let state = false;
+                for ( let i = 0; i < num; i++ ) {
+                    const obj = {
+                        key : this.key + i + 1,
+                        left : null,
+                        right : null
+                    }
+                    this.mountNode ( this, obj, state );
+                    state = !state
+                }
+            }
+
+            createBinaryTree_two (storey) {
+                // 入参指定数字，将当前实例创建为指定层数的二叉树
+                if (typeof storey !== "number") return;
+                this.mountNode_two( this, storey );
+            }
+
+            mountNode_two ( node, storey ) {
+                if ( storey < 0 ) return;
+                storey --;
+                node.left = new RandomNumObj();
+                node.right = new RandomNumObj();
+                this.mountNode_two(node.left, storey);
+                this.mountNode_two(node.right, storey);
+            }
+
+            mountNode ( node, obj, left ) {
+                if ( !node || !obj ) return;
+                if ( !node.left ) return node.left = obj;
+                if ( !node.right ) return node.right = obj;
+                if ( left ) {
+                    return this.mountNode( node.left, obj, false );
+                } else {
+                    return this.mountNode( node.right, obj, true );
+                }
+            }
+
+            seachBeforeTree () {
+               return this.iterTwoBefore(this)
+            }
+
+            seachCenterTree () {
+               return this.iterTwoCenter(this)
+            }
+
+            seachLastTree () {
+               return this.iterTwoLast(this)
+            }
+
+            iterTwoBefore (root) {
+                if (!root) return;
+                console.log(root.value);
+                this.iterTwoBefore(root.left);
+                this.iterTwoBefore(root.right);
+            }
+
+            iterTwoCenter (root) {
+                if (!root) return;
+                this.iterTwoCenter(root.left);
+                console.log(root.value);
+                this.iterTwoCenter(root.right);
+            }
+
+            iterTwoLast (root) {
+                if (!root) return;
+                this.iterTwoLast(root.left);
+                this.iterTwoLast(root.right);
+                console.log(root.value);
+            }
+
+        }
+
+
+        class RandomNumObj {
+            constructor () {
+                this.key = Math.floor(Math.random() * 1000);
+                this.left = null;
+                this.right = null;
+            }
+        }
+
+        const testTree_one = new BinaryTreeNode();
+        testTree_one.createBinaryTree(12);
+        const testTree_two = new BinaryTreeNode();
+        testTree_two.createBinaryTree_two(5);
+    </script>
+</body>
+</html>
